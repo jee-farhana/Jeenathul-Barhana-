@@ -1,0 +1,384 @@
+
+package com.student_AMS;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Scanner;
+
+public class Stud_details {
+
+    public static void main(String[] args) throws ParseException {
+        String url = "jdbc:mysql://localhost:3306/stud_AMS";
+        String user = "root";
+        String password = "Ss@swathi4001";
+
+        // SQL query for inserting values
+        String insertQuery = "INSERT INTO student (id, name, phonenum, course, age, email) VALUES (?, ?, ?, ?, ?, ?)";
+        String insertQuery2 = "INSERT INTO Attendance ( student_id, date, status, remarks, percentage) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement pstmt = conn.prepareStatement(insertQuery);
+             PreparedStatement pstatement = conn.prepareStatement(insertQuery2);
+           
+        Scanner scanner = new Scanner(System.in)){
+            System.out.print("Enter value for id=: ");
+            int id = scanner.nextInt();
+            System.out.print("Enter value for name: ");
+            String name = scanner.next();
+            System.out.print("Enter value for phonenum: ");
+            Double phonenum = scanner.nextDouble();
+            System.out.print("Enter value for course: ");
+            String course = scanner.next();
+            System.out.print("Enter value for age: ");
+            int age = scanner.nextInt();
+            System.out.print("Enter value for email: ");
+            String email = scanner.next();
+       
+            pstmt.setInt(1, id);
+            pstmt.setString(2, name);
+            pstmt.setDouble(3, phonenum);
+            pstmt.setString(4, course);
+            pstmt.setInt(5, age);
+            pstmt.setString(6, email);
+           
+            pstmt.executeUpdate();
+            System.out.println("student record insereted successfully!");
+           
+               
+                System.out.print("Enter value for student_id: ");
+                int student_id = scanner.nextInt();
+                System.out.print("Enter value for date (YYYY-MM-DD): ");
+                String dateStr = scanner.next();
+                System.out.print("Enter value for status: ");
+                String status = scanner.next();
+                System.out.print("Enter value for remarks: ");
+                String remarks = scanner.next();
+                System.out.print("Enter value for percentage: ");
+                Float percentage = scanner.nextFloat();
+               
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                java.util.Date parsedDate = dateFormat.parse(dateStr);
+                java.sql.Date date = new java.sql.Date(parsedDate.getTime());
+               
+               
+                pstatement.setInt(1, student_id);
+                pstatement.setDate(2, date);
+                pstatement.setString(3, status);
+                pstatement.setString(4, remarks);
+                pstatement.setFloat(5, percentage);
+               
+                pstatement.executeUpdate();
+                System.out.println("Attendance record inserterd successfully!");
+               
+               
+            }
+       
+             catch (SQLException e) {
+              e.printStackTrace();
+             
+             }
+        }
+    }
+               
+
+                 
+           
+       
+    
+//Database creation 
+
+
+package com.student_AMS;
+
+
+
+import java.sql.Connection;
+
+import java.sql.DriverManager;
+
+import java.sql.ResultSet;
+
+import java.sql.Statement;
+
+import java.util.Scanner;
+
+
+
+public class Stu_DB {
+
+
+
+	public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        try
+
+		      {
+
+		    	  Class.forName("com.mysql.jdbc.Driver");  // load driver
+
+		    	  Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/sys","root","Ss@swathi4001"); //connection obj create
+
+		    	  Statement stmt=con.createStatement(); 
+
+		    	 
+
+		    	  String createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS stud_AMS";
+
+		            stmt.executeUpdate(createDatabaseQuery);
+
+		            System.out.println("Database created successfully.");
+
+		            stmt.executeUpdate("USE stud_AMS");
+
+		            System.out.println("Using Database");
+
+
+
+		            String createStudentTableQuery = "CREATE TABLE IF NOT EXISTS student ("
+
+		                    + "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+
+		                    + "FirstName VARCHAR(50) NOT NULL,"
+
+		                    + "LastName VARCHAR(50),"
+
+		                    + "phonenum VARCHAR(10),"
+
+		                    + "course VARCHAR(20),"
+
+		                    + "age INT,"
+
+		                    + "email VARCHAR(50)"
+
+		                    + ")";
+
+		            stmt.executeUpdate(createStudentTableQuery);
+
+		            System.out.println("Student table created successfully.");
+
+
+
+		            // Create Attendance table
+
+		            String createAttendanceTableQuery = "CREATE TABLE IF NOT EXISTS Attendance ("
+
+		                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+
+		                    + "student_id INT,"
+
+		                    + "date DATE,"
+
+		                    + "status ENUM('Present', 'Absent'),"
+
+		                    + "FOREIGN KEY (student_id) REFERENCES student(id)"
+
+		                    + ")";		            
+
+		         // Add 'remarks' column Alter
+
+		            
+
+		           /* String alterTableQuery1 = "ALTER TABLE Attendance ADD COLUMN remarks VARCHAR(100)";
+
+		            stmt.executeUpdate(alterTableQuery1);
+
+		            System.out.println("New column 'remarks' added to Attendance table successfully.");
+
+
+
+		            // Add 'percentage' column
+
+		            
+
+		            String alterTableQuery2 = "ALTER TABLE Attendance ADD COLUMN percentage FLOAT";
+
+		            stmt.executeUpdate(alterTableQuery2);
+
+		            System.out.println("New column 'percentage' added to Attendance table successfully."); */
+
+		            
+
+		            //delete row 
+
+		            
+
+		      /*    String deleteRowQuery = "DELETE FROM student WHERE id = 9000";
+
+		            stmt.executeUpdate(deleteRowQuery);
+
+		            System.out.println("Deleted successfully");*/
+
+		            
+
+		            //drop column
+
+		            
+
+		         /* String deleteColumnQuery = "ALTER TABLE Attendance DROP COLUMN remarks";
+
+		            stmt.executeUpdate(deleteColumnQuery);
+
+		            System.out.println("Drop Succesfully");*/
+
+		            
+
+		            //update table
+
+		            
+
+		         /*   String updateQuery = "UPDATE student SET age = 25 WHERE id = 202401";
+
+		            stmt.executeUpdate(updateQuery);
+
+		            System.out.println("Record updated successfully.");*/
+
+
+
+		            
+
+		            stmt.executeUpdate(createAttendanceTableQuery);
+
+		            System.out.println("Attendance table created successfully.");
+
+		            
+
+		            // Get student ID from user
+
+		           /* System.out.print("Enter student ID to find attendance status: ");
+
+		            int studentId = scanner.nextInt(); */
+
+		            
+
+
+
+		         // List attendance records for the given student ID
+
+		           /* String listAttendanceQuery = "SELECT s.FirstName, s.LastName, a.date, a.status FROM Attendance a "
+
+		                                       + "JOIN student s ON a.student_id = s.id "
+
+		                                       + "WHERE a.student_id = " + studentId;
+
+		            ResultSet rsAttendance = stmt.executeQuery(listAttendanceQuery);
+
+		            System.out.println("Attendance records for student with ID " + studentId + ":");
+
+		            while (rsAttendance.next()) {
+
+		                String firstName = rsAttendance.getString("FirstName");
+
+		                String lastName = rsAttendance.getString("LastName");
+
+		                String date = rsAttendance.getString("date");
+
+		                String status = rsAttendance.getString("status");
+
+		                System.out.println("Name: " + firstName + " " + lastName + ", Date: " + date + ", Status: " + status);
+
+		            }
+
+		            
+
+		         // Count present and absent days for the given student ID
+
+		            String countPresentQuery = "SELECT COUNT(*) AS present_count FROM Attendance WHERE status = 'Present' AND student_id = " + studentId;
+
+		            ResultSet rsPresent = stmt.executeQuery(countPresentQuery);
+
+		            if (rsPresent.next()) {
+
+		                int presentCount = rsPresent.getInt("present_count");
+
+		                System.out.println("Number of days present: " + presentCount);
+
+		            }
+
+
+
+		            String countAbsentQuery = "SELECT COUNT(*) AS absent_count FROM Attendance WHERE status = 'Absent' AND student_id = " + studentId;
+
+		            ResultSet rsAbsent = stmt.executeQuery(countAbsentQuery);
+
+		            if (rsAbsent.next()) {
+
+		                int absentCount = rsAbsent.getInt("absent_count");
+
+		                System.out.println("Number of days absent: " + absentCount);
+
+		            } */
+
+		            
+
+		         
+
+		            
+
+
+
+		            //  user for type of report: Present or Absent
+
+		            System.out.println("Enter '0' for Present Students, '1' for Absent Students:");
+
+		            int choice = scanner.nextInt();
+
+		            String status = (choice == 0) ? "Present" : "Absent";
+
+
+
+		            // Query to list all students based on attendance status
+
+		            String listQuery = "SELECT s.FirstName, s.LastName, a.date, a.status FROM Attendance a "
+
+		                               + "JOIN student s ON a.student_id = s.id "
+
+		                               + "WHERE a.status = '" + status + "'";
+
+		            ResultSet rs = stmt.executeQuery(listQuery);
+
+		            System.out.println("Attendance records for students marked " + status + ":");
+
+		            while (rs.next()) {
+
+		                String firstName = rs.getString("FirstName");
+
+		                String lastName = rs.getString("LastName");
+
+		                String date = rs.getString("date");
+
+		                System.out.println("Name: " + firstName + " " + lastName + ", Date: " + date + ", Status: " + status);
+
+		            }
+
+
+
+		            
+
+		            // Close resources
+
+		            stmt.close();
+
+		            con.close();
+
+		        } catch (Exception e) {
+
+		            e.printStackTrace();
+
+		        }
+
+			 finally {
+
+		            scanner.close();
+
+		        }
+
+		    }
+
+		}
+
